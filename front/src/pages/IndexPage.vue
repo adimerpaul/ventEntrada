@@ -13,40 +13,44 @@
       autoplay
       infinite
     >
-      <q-carousel-slide :name="i++" v-for="(c,i) in carousels" :key="i++"
+      <q-carousel-slide :name="i++" v-for="(c,i) in carousels" :key="i++" class="cursor-pointer"
                         :img-src="$q.screen.lt.md ?`${$url}../images/${c.imageResponsive}`:`${$url}../images/${c.image}`"
       />
     </q-carousel>
     <div class="row q-pa-xs">
       <div class="col-12">
-        <div class="text-h5">
+        <div class="text-h6 text-center text-bold">
           CARTELERA SEMANAL
         </div>
       </div>
       <div class="col-12">
-        <div style="position: relative; width: 100%; overflow: hidden;border: 1px solid #ccc;">
-          <q-icon name="chevron_left" size="2.5rem" color="white"
-                  style="position: absolute; left: 0; top: 50%;height: 100vh;width: 25px;
-              transform: translateY(-50%);z-index: 1;background: rgba(128,128,128,0.2);"
-                  @click="scrollMinus" class="cursor-pointer"/>
-          <q-scroll-area ref="scrollAreaRef" style="height: 135px; width: 100%; overflow: auto;">
-            <div class="row no-wrap">
-              <q-card v-for="r in rubros" :key="r.id"
-                      style="width: 140px;height: 120px;overflow: hidden"
-                      class="q-ma-xs bg-blue-1 cursor-pointer" flat bordered
-              >
-                <q-card-section class="text-center">
-                  <q-avatar color="white" text-color="grey" :icon="r.icono" />
-                  <div class="">{{ r.nombre }}</div>
-                </q-card-section>
+        <q-virtual-scroll
+          :items="programacion"
+          virtual-scroll-horizontal
+          v-slot="{ item, index }"
+        >
+          <div
+            :key="index"
+            style=" width: 200px; margin: 10px; display: inline-block; vertical-align: top;"
+          >
+              <q-card flat>
+                <div v-if="item.fechaEstreno!=null" class="text-center bg-red-8 text-white">Estreno</div>
+                <div v-if="item.fechaEstreno==null" class="text-center bg-white text-white no-select">a</div>
+                <q-img :src="`${$url}../images/${item.image}`" width="200px" height="300px" class="cursor-pointer">
+                  <div class="absolute-bottom">
+<!--                    <div class="text-h6">Our Changing Planet</div>-->
+                    <div class="text-subtitle2 text-center">{{ item.title }}</div>
+                  </div>
+                </q-img>
+                <q-card-actions class="q-pa-none">
+                  <q-btn label="Comprar" color="red-8" class="full-width" icon="o_shopping_cart" no-caps/>
+                </q-card-actions>
               </q-card>
-            </div>
-          </q-scroll-area>
-          <q-icon name="chevron_right" size="2.5rem" color="white"
-                  style="position: absolute; right: 0; top: 50%;height: 100vh;width: 25px;
-              transform: translateY(-50%);z-index: 1;background: rgba(128,128,128,0.2);"
-                  @click="scrollMore" class="cursor-pointer"/>
-        </div>
+          </div>
+        </q-virtual-scroll>
+      </div>
+      <div class="col-12">
+        <pre>{{programacion}}</pre>
       </div>
     </div>
   </q-page>
@@ -60,20 +64,25 @@ export default {
       slide: 1,
       carousels: [],
       programacion: [],
-      rubros: []
+      heavyList: []
     }
   },
   created () {
-    for (let i = 0; i < 1000; i++) {
-      this.rubros.push({
-        id: i,
-        nombre: `Rubro ${i}`,
-        icono: 'fas fa-utensils'
+    for (let i = 0; i < 100; i++) {
+      this.heavyList.push({
+        label: 'Option ' + (i + 1),
+        class: i % 2 === 0 ? 'q-pa-md self-center bg-grey-2 text-black' : 'q-pa-lg bg-black text-white'
       })
     }
+    this.programacionGet()
     this.carouselsGet()
   },
   methods: {
+    programacionGet () {
+      this.$axios.get('disponibles').then(response => {
+        this.programacion = response.data
+      })
+    },
     scrollMinus () {
       const number = this.$refs.scrollAreaRef.getScrollPosition('horizontal').left - 300
       this.$refs.scrollAreaRef.setScrollPosition('horizontal', number, 300)
@@ -85,7 +94,6 @@ export default {
     carouselsGet () {
       this.$axios.get('carousels').then(response => {
         this.carousels = response.data
-        console.log(this.carousels)
       })
     }
   }
