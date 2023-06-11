@@ -19,4 +19,5 @@ use Illuminate\Support\Facades\Route;
 //});
 Route::apiResource('carousels',\App\Http\Controllers\CarouselController::class);
 Route::apiResource('carteleras',\App\Http\Controllers\CarteleraController::class);
+Route::apiResource('movies',\App\Http\Controllers\MovieController::class);
 Route::get('disponibles',[\App\Http\Controllers\CarteleraController::class,'disponibles']);

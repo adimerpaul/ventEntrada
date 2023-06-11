@@ -33,25 +33,29 @@
             :key="index"
             style=" width: 200px; margin: 10px; display: inline-block; vertical-align: top;"
           >
-              <q-card flat>
-                <div v-if="item.fechaEstreno!=null" class="text-center bg-red-8 text-white">Estreno</div>
-                <div v-if="item.fechaEstreno==null" class="text-center bg-white text-white no-select">a</div>
-                <q-img :src="`${$url}../images/${item.image}`" width="200px" height="300px" class="cursor-pointer">
-                  <div class="absolute-bottom">
-<!--                    <div class="text-h6">Our Changing Planet</div>-->
-                    <div class="text-subtitle2 text-center">{{ item.title }}</div>
-                  </div>
-                </q-img>
-                <q-card-actions class="q-pa-none">
-                  <q-btn label="Comprar" color="red-8" class="full-width" icon="o_shopping_cart" no-caps/>
-                </q-card-actions>
-              </q-card>
+          <q-intersection
+            transition="scale"
+          >
+            <q-card flat>
+              <div v-if="item.fechaEstreno!=null" class="text-center bg-red-8 text-white">Estreno</div>
+              <div v-if="item.fechaEstreno==null" class="text-center bg-white text-white no-select">a</div>
+              <q-img @click="openSale(item)" :src="`${$url}../images/${item.image}`" fit="fill" width="200px" height="300px" class="cursor-pointer">
+                <div class="absolute-bottom">
+                  <!--                    <div class="text-h6">Our Changing Planet</div>-->
+                  <div class="text-subtitle2 text-center">{{ item.title }}</div>
+                </div>
+              </q-img>
+              <q-card-actions class="q-pa-none">
+                <q-btn :to="`/sale/${item.id}`" label="Comprar" color="red-8" class="full-width" icon="o_shopping_cart" no-caps/>
+              </q-card-actions>
+            </q-card>
+          </q-intersection>
           </div>
         </q-virtual-scroll>
       </div>
-      <div class="col-12">
-        <pre>{{programacion}}</pre>
-      </div>
+<!--      <div class="col-12">-->
+<!--        <pre>{{programacion}}</pre>-->
+<!--      </div>-->
     </div>
   </q-page>
 </template>
@@ -83,13 +87,8 @@ export default {
         this.programacion = response.data
       })
     },
-    scrollMinus () {
-      const number = this.$refs.scrollAreaRef.getScrollPosition('horizontal').left - 300
-      this.$refs.scrollAreaRef.setScrollPosition('horizontal', number, 300)
-    },
-    scrollMore () {
-      const number = this.$refs.scrollAreaRef.getScrollPosition('horizontal').left + 300
-      this.$refs.scrollAreaRef.setScrollPosition('horizontal', number, 300)
+    openSale (item) {
+      this.$router.push('/sale/' + item.id)
     },
     carouselsGet () {
       this.$axios.get('carousels').then(response => {
