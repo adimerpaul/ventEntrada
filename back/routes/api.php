@@ -18,3 +18,5 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 Route::apiResource('carousels',\App\Http\Controllers\CarouselController::class);
+Route::apiResource('carteleras',\App\Http\Controllers\CarteleraController::class);
+Route::get('disponibles',[\App\Http\Controllers\CarteleraController::class,'disponibles']);

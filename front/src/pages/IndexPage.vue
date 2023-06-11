@@ -25,8 +25,8 @@
       </div>
       <div class="col-12">
         <div style="position: relative; width: 100%; overflow: hidden;border: 1px solid #ccc;">
-          <q-icon name="chevron_left" size="2.5rem" color="red-3"
-                  style="position: absolute; left: 0; top: 50%;
+          <q-icon name="chevron_left" size="2.5rem" color="white"
+                  style="position: absolute; left: 0; top: 50%;height: 100vh;width: 25px;
               transform: translateY(-50%);z-index: 1;background: rgba(128,128,128,0.2);"
                   @click="scrollMinus" class="cursor-pointer"/>
           <q-scroll-area ref="scrollAreaRef" style="height: 135px; width: 100%; overflow: auto;">
@@ -42,8 +42,8 @@
               </q-card>
             </div>
           </q-scroll-area>
-          <q-icon name="chevron_right" size="2.5rem" color="red-3"
-                  style="position: absolute; right: 0; top: 50%;
+          <q-icon name="chevron_right" size="2.5rem" color="white"
+                  style="position: absolute; right: 0; top: 50%;height: 100vh;width: 25px;
               transform: translateY(-50%);z-index: 1;background: rgba(128,128,128,0.2);"
                   @click="scrollMore" class="cursor-pointer"/>
         </div>
