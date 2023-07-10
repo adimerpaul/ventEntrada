@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->string('image')->nullable();
             $table->string('urlVideo')->nullable();
+            $table->string('codeImg')->nullable();
             $table->string('director')->nullable();
             $table->text('reparto')->nullable();
             $table->text('sinopsis')->nullable();

@@ -14,15 +14,18 @@
             <q-btn dense label="Registrate" size="12px" color="grey-10" no-caps/>
           </q-route-tab>
           <q-route-tab>
-            <q-btn dense label="Iniciar Sesión" size="12px" color="red-10" no-caps/>
+            <q-btn dense label="Iniciar Sesión" size="12px" color="primary" no-caps/>
           </q-route-tab>
         </q-tabs>
       </div>
       <div v-if="!$q.screen.lt.sm">
-        <div class="text-red-6 text-bold text-h5" style="float: left;margin: 10px 0px 0px 10px;position: absolute;">
-          Multicines Plaza
-        </div>
-        <q-tabs v-model="tab" class="text-red-10">
+<!--        <span class="text-red-6 text-bold text-h5 cursor-pointer" style="float: left;margin: 10px 0px 0px 10px;position: absolute;cursor: pointer;outline: 1px solid red;z-index: 10;">-->
+          <q-img src="/logoLargo.png" width="100px" class="cursor-pointer"
+                 style="float: left;margin: 10px 0px 0px 10px;position: absolute;z-index: 10;"
+                 @click="$router.push('/')"
+          />
+<!--        </span>-->
+        <q-tabs v-model="tab" class="text-primary">
           <q-route-tab name="peliculas" to="/" >
             <div class="text-bold">Peliculas</div>
           </q-route-tab>
@@ -103,7 +106,7 @@
                 <div class="text-grey">Publicidad</div>
               </div>
               <div class="col-6 col-md-2 q-pa-md">
-                <div class=" text-grey text-bold">Contactos</div>
+                <div class=" text-grey text-bold">CONTACTOS</div>
                 <q-separator />
                 <div class="text-grey">Escribenos</div>
                 <div class="text-grey">Trabaja con nosotros</div>

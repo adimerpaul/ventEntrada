@@ -1,5 +1,6 @@
 import { boot } from 'quasar/wrappers'
 import axios from 'axios'
+import { useCounterStore } from 'stores/example-store'
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -11,7 +12,7 @@ const api = axios.create({ baseURL: 'https://api.example.com' })
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
-
+  app.config.globalProperties.$store = useCounterStore()
   app.config.globalProperties.$axios = axios.create({ baseURL: import.meta.env.VITE_BACK_API })
   app.config.globalProperties.$url = import.meta.env.VITE_BACK_API
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)

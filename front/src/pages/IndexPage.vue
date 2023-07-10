@@ -4,7 +4,7 @@
       animated
       v-model="slide"
       arrows
-      :height="$q.screen.lt.md ? '35vh' : '45vh'"
+      :height="$q.screen.lt.md ? '35vh' : '60vh'"
       navigation
       navigation-icon="radio_button_unchecked"
       control-type="outline"
@@ -19,7 +19,7 @@
     </q-carousel>
     <div class="row q-pa-xs">
       <div class="col-12">
-        <div class="text-h6 text-center text-bold">
+        <div class="text-h6 text-center text-bold no-select">
           CARTELERA SEMANAL
         </div>
       </div>
@@ -37,7 +37,7 @@
             transition="scale"
           >
             <q-card flat>
-              <div v-if="item.fechaEstreno!=null" class="text-center bg-red-8 text-white">Estreno</div>
+              <div v-if="item.fechaEstreno!=null" class="text-center bg-primary text-white">Estreno</div>
               <div v-if="item.fechaEstreno==null" class="text-center bg-white text-white no-select">a</div>
               <q-img @click="openSale(item)" :src="`${$url}../images/${item.image}`" fit="fill" width="200px" height="300px" class="cursor-pointer">
                 <div class="absolute-bottom">
@@ -46,7 +46,7 @@
                 </div>
               </q-img>
               <q-card-actions class="q-pa-none">
-                <q-btn :to="`/sale/${item.id}`" label="Comprar" color="red-8" class="full-width" icon="o_shopping_cart" no-caps/>
+                <q-btn :to="`/sale/${item.id}`" label="Comprar" color="primary" class="full-width" icon="o_shopping_cart" no-caps/>
               </q-card-actions>
             </q-card>
           </q-intersection>
@@ -88,6 +88,7 @@ export default {
       })
     },
     openSale (item) {
+      this.$store.movie = item
       this.$router.push('/sale/' + item.id)
     },
     carouselsGet () {

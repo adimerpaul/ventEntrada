@@ -6,13 +6,14 @@
       <div class="row">
         <div class="col-12">
           <q-img
-            v-if="movie.codeVideo"
+            v-if="movie.codeImg"
             width="100%"
             :height="$q.screen.lt.sm ? '210px' : '450px'"
-            :src="`https://img.youtube.com/vi/${movie.codeVideo}/maxresdefault.jpg`"
+            :src="`https://img.youtube.com/vi/${movie.codeImg}/maxresdefault.jpg`"
             spinner-color="white"
             fit="cover"
             spinner-size="40"
+            @click="openVideo"
           >
             <div class="absolute-full text-subtitle2 flex flex-center">
               <q-icon name="o_play_circle" size="100px" color="white" />
@@ -97,7 +98,45 @@
           <div class="text-grey text-subtitle2" v-html="movie.reparto"></div>
           <div class="text-red-8 text-bold">SINOPSIS</div>
           <q-separator />
-          <div class="text-grey text-subtitle2" v-html="movie.sinopsis" style="height: 200px; overflow-y: auto;"></div>
+          <div class="text-grey text-subtitle2 text-justify" v-html="movie.sinopsis"
+               style="height: 200px; overflow-y: auto;"></div>
+        </div>
+        <div class="col-12 col-md-8">
+          <q-card>
+            <q-tabs
+              v-model="tab"
+              dense
+              class="text-grey"
+              active-color="primary"
+              indicator-color="primary"
+              align="justify"
+              narrow-indicator
+            >
+              <q-tab name="mails" label="Mails" />
+              <q-tab name="alarms" label="Alarms" />
+              <q-tab name="movies" label="Movies" />
+            </q-tabs>
+
+            <q-separator />
+
+            <q-tab-panels v-model="tab" animated>
+              <q-tab-panel name="mails">
+                <div class="text-h6">Mails</div>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              </q-tab-panel>
+
+              <q-tab-panel name="alarms">
+                <div class="text-h6">Alarms</div>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              </q-tab-panel>
+
+              <q-tab-panel name="movies">
+                <div class="text-h6">Movies</div>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              </q-tab-panel>
+            </q-tab-panels>
+          </q-card>
+          <pre>{{carteleras}}</pre>
         </div>
       </div>
     </div>
@@ -112,14 +151,29 @@ export default {
   data () {
     return {
       visible: false,
-      movie: {}
+      movie: this.$store.movie,
+      carteleras: [],
+      tab: 'mails'
     }
   },
   created () {
     this.$axios.get('movies/' + this.$route.params.id).then(response => {
       this.movie = response.data
-      this.movie.codeVideo = this.movie.urlVideo.split('/')[3]
     })
+    this.$axios.get('searchCatelera/' + this.$route.params.id).then(response => {
+      this.carteleras = response.data
+    })
+  },
+  methods: {
+    openVideo () {
+      this.$q.dialog({
+        title: 'Trailer',
+        fullWidth: true,
+        fullHeight: 500,
+        message: `<iframe width="100%" height="500px" src="https://www.youtube.com/embed/${this.movie.codeImg}" title="${this.movie.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`,
+        html: true
+      })
+    }
   }
 }
 </script>
