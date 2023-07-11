@@ -23,10 +23,29 @@ class CarteleraController extends Controller{
             ->get();
     }
     public function searchCatelera($movie_id){
-        return Cartelera::with(["movie","sala","price"])
-            ->where("movie_id","=",$movie_id)
+        $fechaCarteleras = Cartelera::select("carteleras.fecha")
             ->where("carteleras.activo","=","ACTIVO")
+            ->where("carteleras.movie_id","=",$movie_id)
             ->where("carteleras.fecha",">",date("Y-m-d"))
+            ->groupBy("carteleras.fecha")
             ->get();
+        $resposeCateleras = [];
+        foreach($fechaCarteleras as $fechaCartelera){
+            $horarios = Cartelera::with(["sala","price"])
+                ->where("carteleras.activo","=","ACTIVO")
+                ->where("carteleras.movie_id","=",$movie_id)
+                ->where("carteleras.fecha","=",$fechaCartelera->fecha)
+                ->get();
+            $resposeCateleras[] = [
+                "fecha" => $fechaCartelera->fecha,
+                "horarios" => $horarios
+            ];
+        }
+        return $resposeCateleras;
+//        return Cartelera::with(["movie","sala","price"])
+//            ->where("movie_id","=",$movie_id)
+//            ->where("carteleras.activo","=","ACTIVO")
+//            ->where("carteleras.fecha",">",date("Y-m-d"))
+//            ->get();
     }
 }

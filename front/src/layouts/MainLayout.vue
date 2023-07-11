@@ -1,23 +1,23 @@
 <template>
   <q-layout view="lHh Lpr fff">
     <q-header class="bg-white">
-      <div class="bg-grey-4 q-px-md row items-center">
-        <q-btn type="a" target="_blank" href="https://www.facebook.com/MultiCinesPLAZA" flat dense round icon="fa-brands fa-facebook" size="12px" color="grey" class="q-mr-sm"/>
-        <q-btn type="a" target="_blank" href="https://www.facebook.com/MultiCinesPLAZA" flat dense round icon="fa-brands fa-instagram" size="12px" color="grey" class="q-mr-sm"/>
-        <q-space/>
-        <q-tabs dense v-model="tab" class="text-grey-9">
-          <q-route-tab v-if="!$q.screen.lt.sm" icon="o_home" to="/"/>
-          <q-route-tab v-if="!$q.screen.lt.sm" label="Conócenos" to="/conocenos" no-caps class="text-caption" />
-          <q-route-tab v-if="!$q.screen.lt.sm" label="Formatos" to="/formatos" no-caps class="text-caption" />
-          <q-route-tab v-if="!$q.screen.lt.sm" label="Publicidad & Marketing" to="/publicidad" no-caps class="text-caption" />
-          <q-route-tab v-if="!$q.screen.lt.sm">
-            <q-btn dense label="Registrate" size="12px" color="grey-10" no-caps/>
-          </q-route-tab>
-          <q-route-tab>
-            <q-btn dense label="Iniciar Sesión" size="12px" color="primary" no-caps/>
-          </q-route-tab>
-        </q-tabs>
-      </div>
+<!--      <div class="bg-grey-4 q-px-md row items-center">-->
+<!--        <q-btn type="a" target="_blank" href="https://www.facebook.com/MultiCinesPLAZA" flat dense round icon="fa-brands fa-facebook" size="12px" color="grey" class="q-mr-sm"/>-->
+<!--        <q-btn type="a" target="_blank" href="https://www.facebook.com/MultiCinesPLAZA" flat dense round icon="fa-brands fa-instagram" size="12px" color="grey" class="q-mr-sm"/>-->
+<!--        <q-space/>-->
+<!--        <q-tabs dense v-model="tab" class="text-grey-9">-->
+<!--          <q-route-tab v-if="!$q.screen.lt.sm" icon="o_home" to="/"/>-->
+<!--          <q-route-tab v-if="!$q.screen.lt.sm" label="Conócenos" to="/conocenos" no-caps class="text-caption" />-->
+<!--          <q-route-tab v-if="!$q.screen.lt.sm" label="Formatos" to="/formatos" no-caps class="text-caption" />-->
+<!--          <q-route-tab v-if="!$q.screen.lt.sm" label="Publicidad & Marketing" to="/publicidad" no-caps class="text-caption" />-->
+<!--          <q-route-tab v-if="!$q.screen.lt.sm">-->
+<!--            <q-btn dense label="Registrate" size="12px" color="grey-10" no-caps/>-->
+<!--          </q-route-tab>-->
+<!--          <q-route-tab>-->
+<!--            <q-btn dense label="Iniciar Sesión" size="12px" color="primary" no-caps/>-->
+<!--          </q-route-tab>-->
+<!--        </q-tabs>-->
+<!--      </div>-->
       <div v-if="!$q.screen.lt.sm">
 <!--        <span class="text-red-6 text-bold text-h5 cursor-pointer" style="float: left;margin: 10px 0px 0px 10px;position: absolute;cursor: pointer;outline: 1px solid red;z-index: 10;">-->
           <q-img src="/logoLargo.png" width="100px" class="cursor-pointer"

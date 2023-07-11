@@ -14,6 +14,10 @@ class CarteleraSeeder extends Seeder
     public function run(): void
     {
         $fecha = date("Y-m-d",strtotime("+1 day"));
+        $fecha2Day = date("Y-m-d",strtotime("+2 day"));
+        $fecha3Day = date("Y-m-d",strtotime("+3 day"));
+        $fecha4Day = date("Y-m-d",strtotime("+4 day"));
+        $fecha5Day = date("Y-m-d",strtotime("+5 day"));
         DB::table("carteleras")->insert([
             [
                 'fecha'=>"$fecha",
@@ -32,6 +36,58 @@ class CarteleraSeeder extends Seeder
                 'fecha'=>"$fecha",
                 "horaInicio"=>"$fecha 13:00:00",
                 "horaFin"=>"$fecha 15:00:00",
+                "subtitulada"=>"NO",
+                "idioma"=>"Español",
+                "formato"=>"2D",
+                "nroFuncion"=>"1",
+                "user_id"=>"1",
+                "movie_id"=>"1",
+                "sala_id"=>"1",
+                "price_id"=>"1",
+            ],
+            [
+                'fecha'=>"$fecha2Day",
+                "horaInicio"=>"$fecha2Day 20:00:00",
+                "horaFin"=>"$fecha2Day 22:00:00",
+                "subtitulada"=>"NO",
+                "idioma"=>"Español",
+                "formato"=>"2D",
+                "nroFuncion"=>"1",
+                "user_id"=>"1",
+                "movie_id"=>"1",
+                "sala_id"=>"1",
+                "price_id"=>"1",
+            ],
+            [
+                'fecha'=>"$fecha3Day",
+                "horaInicio"=>"$fecha3Day 20:00:00",
+                "horaFin"=>"$fecha3Day 22:00:00",
+                "subtitulada"=>"NO",
+                "idioma"=>"Español",
+                "formato"=>"2D",
+                "nroFuncion"=>"1",
+                "user_id"=>"1",
+                "movie_id"=>"1",
+                "sala_id"=>"1",
+                "price_id"=>"1",
+            ],
+            [
+                'fecha'=>"$fecha4Day",
+                "horaInicio"=>"$fecha4Day 20:00:00",
+                "horaFin"=>"$fecha4Day 22:00:00",
+                "subtitulada"=>"NO",
+                "idioma"=>"Español",
+                "formato"=>"2D",
+                "nroFuncion"=>"1",
+                "user_id"=>"1",
+                "movie_id"=>"1",
+                "sala_id"=>"1",
+                "price_id"=>"1",
+            ],
+            [
+                'fecha'=>"$fecha5Day",
+                "horaInicio"=>"$fecha5Day 20:00:00",
+                "horaFin"=>"$fecha5Day 22:00:00",
                 "subtitulada"=>"NO",
                 "idioma"=>"Español",
                 "formato"=>"2D",

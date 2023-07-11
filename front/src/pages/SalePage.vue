@@ -58,7 +58,7 @@
           </div>
         </div>
         <div class="col-12 col-md-4 q-pa-xs" v-if="$q.screen.lt.md">
-          <div class="text-red-8 text-bold" :style="$q.screen.lt.md?'':`margin-top: 37%`">
+          <div class="text-primary text-bold" :style="$q.screen.lt.md?'':`margin-top: 37%`">
             <q-btn
               outline
               color="grey-5"
@@ -69,34 +69,39 @@
           </div>
           <q-slide-transition>
           <div v-show="visible">
-            <div class="text-red-8 text-bold">TITULO ORIGINAL</div>
+            <div class="text-primary text-bold">
+              TITULO ORIGINAL
+            </div>
             <q-separator />
             <div class="text-grey text-subtitle2">{{movie.title}}</div>
-            <div class="text-red-8 text-bold">DIRECTOR</div>
+            <div class="text-primary text-bold">DIRECTOR</div>
             <q-separator />
             <div class="text-grey text-subtitle2" v-html="movie.director"></div>
-            <div class="text-red-8 text-bold">REPARTO</div>
+            <div class="text-primary text-bold">REPARTO</div>
             <q-separator />
             <div class="text-grey text-subtitle2" v-html="movie.reparto"></div>
-            <div class="text-red-8 text-bold">SINOPSIS</div>
+            <div class="text-primary text-bold">SINOPSIS</div>
             <q-separator />
             <div class="text-grey text-subtitle2" v-html="movie.sinopsis" style="height: 200px; overflow-y: auto;"></div>
           </div>
           </q-slide-transition>
         </div>
         <div class="col-12 col-md-4 q-pa-xs" v-else>
-          <div class="text-red-8 text-bold" :style="$q.screen.lt.md?'':`margin-top: 37%`">
+          <div class="text-primary text-bold" :style="$q.screen.lt.md?'':`margin-top: 37%`">
           </div>
-          <div class="text-red-8 text-bold">TITULO ORIGINAL</div>
+          <div class="text-primary text-bold">
+            TITULO ORIGINAL
+            <q-btn icon="refresh" flat @click="searchCarteleraGet" />
+          </div>
           <q-separator />
           <div class="text-grey text-subtitle2">{{movie.title}}</div>
-          <div class="text-red-8 text-bold">DIRECTOR</div>
+          <div class="text-primary text-bold">DIRECTOR</div>
           <q-separator />
           <div class="text-grey text-subtitle2" v-html="movie.director"></div>
-          <div class="text-red-8 text-bold">REPARTO</div>
+          <div class="text-primary text-bold">REPARTO</div>
           <q-separator />
           <div class="text-grey text-subtitle2" v-html="movie.reparto"></div>
-          <div class="text-red-8 text-bold">SINOPSIS</div>
+          <div class="text-primary text-bold">SINOPSIS</div>
           <q-separator />
           <div class="text-grey text-subtitle2 text-justify" v-html="movie.sinopsis"
                style="height: 200px; overflow-y: auto;"></div>
@@ -104,7 +109,7 @@
         <div class="col-12 col-md-8">
           <q-card>
             <q-tabs
-              v-model="tab"
+              v-model="tabDay"
               dense
               class="text-grey"
               active-color="primary"
@@ -112,37 +117,87 @@
               align="justify"
               narrow-indicator
             >
-              <q-tab name="mails" label="Mails" />
-              <q-tab name="alarms" label="Alarms" />
-              <q-tab name="movies" label="Movies" />
+              <q-tab v-for="(cartelera, index) in carteleras" :key="index"
+                     :name="cartelera.fecha" no-caps>
+                <div class="text-bold">{{ $filters.dateDay(cartelera.fecha) }}</div>
+                {{ $filters.dateDmY(cartelera.fecha) }}
+              </q-tab>
             </q-tabs>
-
             <q-separator />
-
-            <q-tab-panels v-model="tab" animated>
-              <q-tab-panel name="mails">
-                <div class="text-h6">Mails</div>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              </q-tab-panel>
-
-              <q-tab-panel name="alarms">
-                <div class="text-h6">Alarms</div>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              </q-tab-panel>
-
-              <q-tab-panel name="movies">
-                <div class="text-h6">Movies</div>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            <q-tab-panels v-model="tabDay" animated>
+              <q-tab-panel v-for="(cartelera, index) in carteleras" :key="index" :name="cartelera.fecha">
+                <div class="text-bold"><span class="text-primary">Dirección</span> Av. Tacna, Jaén y Tomás Frias Ciudad Oruro, Bolivia</div>
+                <div class="text-bold"><span class="text-primary">Selecciona tu horario</span></div>
+                <div class="row">
+                  <div class="col-12 col-md-4 q-pa-xs" v-for="(horario, index) in cartelera.horarios" :key="index">
+                    <q-card >
+                      <q-card-section class="row items-center q-pa-none">
+                        <div class="col-12 text-center">
+                          <div class="text-bold text-black">
+                            <q-chip :label="`${horario.idioma}`" size="10px" color="primary" text-color="white" dense/>
+                            <q-chip :label="`${horario.formato}`" size="10px" color="primary" text-color="white" dense/>
+                            <q-chip :label="`S${horario.sala.nro}`" size="10px" color="primary" text-color="white" dense/>
+                            <q-chip :label="`Sub`" v-if="horario.subtitulada=='SI'" size="10px" color="primary" text-color="white" dense/>
+                          </div>
+                        </div>
+                      </q-card-section>
+                      <q-separator />
+                      <q-card-section class="row items-center q-pa-none">
+                        <q-btn
+                          color="primary"
+                          class="q-pa-xs full-width text-bold"
+                          @click="dialogPantallaClick(horario)"
+                          no-caps
+                          dense
+                        >
+                          <q-chip :label="`${horario.price.precio}Bs`" size="12px" color="white" class="text-bold" dense/>
+                          {{$filters.dateTime(horario.horaInicio)}}
+                        </q-btn>
+                      </q-card-section>
+                    </q-card>
+<!--                    <pre>{{horario}}</pre>-->
+                  </div>
+                </div>
               </q-tab-panel>
             </q-tab-panels>
           </q-card>
-          <pre>{{carteleras}}</pre>
         </div>
       </div>
     </div>
     <div class="col-12 col-md-1"></div>
   </div>
-  <pre>{{movie}}</pre>
+  <q-dialog v-model="dialogPantalla" full-width full-height>
+    <q-card class="q-pa-xs">
+      <q-card-section class="row items-center q-pa-none">
+        <div class="col-12 text-center">
+          <div class="text-bold text-black">
+            <q-chip :label="`${horario.idioma}`" size="10px" color="primary" text-color="white" dense/>
+            <q-chip :label="`${horario.formato}`" size="10px" color="primary" text-color="white" dense/>
+            <q-chip :label="`S${horario.sala.nro}`" size="10px" color="primary" text-color="white" dense/>
+            <q-chip :label="`Sub`" v-if="horario.subtitulada=='SI'" size="10px" color="primary" text-color="white" dense/>
+            <q-btn
+              color="primary"
+              class="q-pa-xs text-bold"
+              no-caps
+              dense
+            >
+              <q-chip :label="`${horario.price.precio}Bs`" size="12px" color="white" class="text-bold" dense/>
+              {{$filters.dateTime(horario.horaInicio)}}
+            </q-btn>
+          </div>
+        </div>
+      </q-card-section>
+      <q-separator />
+      <q-card-section class="q-pa-none">
+        <div class="text-bold text-white text-center bg-primary shadow-20" style="letter-spacing: 10px;">
+          PANTALLA
+        </div>
+        <div class="row">
+        </div>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
+<!--  <pre>{{movie}}</pre>-->
 </q-page>
 </template>
 <script>
@@ -153,18 +208,28 @@ export default {
       visible: false,
       movie: this.$store.movie,
       carteleras: [],
-      tab: 'mails'
+      tabDay: '',
+      dialogPantalla: false,
+      horario: {}
     }
   },
   created () {
     this.$axios.get('movies/' + this.$route.params.id).then(response => {
       this.movie = response.data
     })
-    this.$axios.get('searchCatelera/' + this.$route.params.id).then(response => {
-      this.carteleras = response.data
-    })
+    this.searchCarteleraGet()
   },
   methods: {
+    dialogPantallaClick (horario) {
+      this.horario = horario
+      this.dialogPantalla = true
+    },
+    searchCarteleraGet () {
+      this.$axios.get('searchCatelera/' + this.$route.params.id).then(response => {
+        this.carteleras = response.data
+        this.tabDay = this.carteleras[0].fecha
+      })
+    },
     openVideo () {
       this.$q.dialog({
         title: 'Trailer',
