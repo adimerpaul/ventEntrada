@@ -2,6 +2,7 @@ import { boot } from 'quasar/wrappers'
 import axios from 'axios'
 import { useCounterStore } from 'stores/example-store'
 import moment from 'moment'
+import { Alert } from 'src/addons/Alert'
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -14,6 +15,7 @@ const api = axios.create({ baseURL: 'https://api.example.com' })
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
   app.config.globalProperties.$store = useCounterStore()
+  app.config.globalProperties.$alert = Alert
   app.config.globalProperties.$axios = axios.create({ baseURL: import.meta.env.VITE_BACK_API })
   app.config.globalProperties.$filters = {
     dateDmY (fecha) {
@@ -24,8 +26,10 @@ export default boot(({ app }) => {
       return date
     },
     dateDay (fecha) {
-      const dias = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom']
-      return dias[moment(String(fecha)).format('d') - 1]
+      const dias = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab']
+      const dia = dias[moment(String(fecha)).format('d')]
+      // const date = dias[dia]
+      return dia
     },
     dateTime (fecha) {
       if (!fecha) return ''

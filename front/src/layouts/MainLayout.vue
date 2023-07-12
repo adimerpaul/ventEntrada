@@ -43,7 +43,12 @@
       <div v-else>
         <q-toolbar >
           <q-btn flat round dense color="red" icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-              <div class="text-red-6 text-bold text-h5 text-center full-width">Multicines Plaza</div>
+              <div class="text-red-6 text-bold text-h5 text-center full-width">
+                <q-img src="/logoLargo.png" width="100px" class="cursor-pointer"
+                       style="z-index: 10;"
+                       @click="$router.push('/')"
+                />
+              </div>
         </q-toolbar>
       </div>
     </q-header>

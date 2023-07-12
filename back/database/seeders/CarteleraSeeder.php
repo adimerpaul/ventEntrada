@@ -21,7 +21,7 @@ class CarteleraSeeder extends Seeder
         DB::table("carteleras")->insert([
             [
                 'fecha'=>"$fecha",
-                "horaInicio"=>"$fecha 10:00:00",
+                "horaInicio"=>"$fecha 04:00:00",
                 "horaFin"=>"$fecha 12:00:00",
                 "subtitulada"=>"NO",
                 "idioma"=>"Español",
@@ -30,7 +30,7 @@ class CarteleraSeeder extends Seeder
                 "user_id"=>"1",
                 "movie_id"=>"1",
                 "sala_id"=>"3",
-                "price_id"=>"1",
+                "price_id"=>"7",
             ],
             [
                 'fecha'=>"$fecha",
@@ -43,7 +43,7 @@ class CarteleraSeeder extends Seeder
                 "user_id"=>"1",
                 "movie_id"=>"1",
                 "sala_id"=>"1",
-                "price_id"=>"1",
+                "price_id"=>"8",
             ],
             [
                 'fecha'=>"$fecha2Day",
@@ -55,8 +55,8 @@ class CarteleraSeeder extends Seeder
                 "nroFuncion"=>"1",
                 "user_id"=>"1",
                 "movie_id"=>"1",
-                "sala_id"=>"1",
-                "price_id"=>"1",
+                "sala_id"=>"2",
+                "price_id"=>"9",
             ],
             [
                 'fecha'=>"$fecha3Day",
@@ -68,8 +68,8 @@ class CarteleraSeeder extends Seeder
                 "nroFuncion"=>"1",
                 "user_id"=>"1",
                 "movie_id"=>"1",
-                "sala_id"=>"1",
-                "price_id"=>"1",
+                "sala_id"=>"3",
+                "price_id"=>"2",
             ],
             [
                 'fecha'=>"$fecha4Day",
@@ -81,8 +81,8 @@ class CarteleraSeeder extends Seeder
                 "nroFuncion"=>"1",
                 "user_id"=>"1",
                 "movie_id"=>"1",
-                "sala_id"=>"1",
-                "price_id"=>"1",
+                "sala_id"=>"2",
+                "price_id"=>"3",
             ],
             [
                 'fecha'=>"$fecha5Day",
@@ -94,8 +94,8 @@ class CarteleraSeeder extends Seeder
                 "nroFuncion"=>"1",
                 "user_id"=>"1",
                 "movie_id"=>"1",
-                "sala_id"=>"1",
-                "price_id"=>"1",
+                "sala_id"=>"3",
+                "price_id"=>"4",
             ],
             [
                 'fecha'=>"$fecha",

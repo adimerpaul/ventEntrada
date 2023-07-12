@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             SeatsSeeder::class,
             PriceSeeder::class,
             CarteleraSeeder::class,
+            TicketSeeder::class,
         ]);
     }
 }
