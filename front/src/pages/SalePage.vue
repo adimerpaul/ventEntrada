@@ -16,7 +16,7 @@
             @click="openVideo"
           >
             <div class="absolute-full text-subtitle2 flex flex-center">
-              <q-icon name="o_play_circle" size="100px" color="white" />
+              <q-btn icon="o_play_circle" size="100px" flat color="grey" :loading="loadingMovie" />
             </div>
           </q-img>
         </div>
@@ -170,27 +170,22 @@
   <q-dialog v-model="dialogPantalla" full-width>
     <q-card class="q-pa-xs">
       <q-card-section class="row items-center q-pa-none">
-        <div class="col-12 text-center">
+<!--        <div class="col-12 text-center">-->
+        <q-space/>
           <div class="text-bold text-black">
-<!--            <q-chip :label="`${horario.idioma}`" size="10px" color="primary" text-color="white" dense/>-->
-<!--            <q-chip :label="`${horario.formato}`" size="10px" color="primary" text-color="white" dense/>-->
-<!--            <q-chip :label="`S${horario.sala.nro}`" size="10px" color="primary" text-color="white" dense/>-->
-<!--            <q-chip :label="`Sub`" v-if="horario.subtitulada=='SI'" size="10px" color="primary" text-color="white" dense/>-->
-<!--            <q-btn-->
-<!--              color="primary"-->
-<!--              class="q-pa-xs text-bold"-->
-<!--              no-caps-->
-<!--              dense-->
-<!--            >-->
-<!--              <q-chip :label="`${horario.price.precio}Bs`" size="12px" color="white" class="text-bold" dense/>-->
-<!--              {{$filters.dateTime(horario.horaInicio)}}-->
-<!--            </q-btn>-->
             {{selecionados.length}} Asientos- {{total}}Bs
           </div>
-        </div>
+        <q-space/>
+        <q-btn flat round icon="close" v-close-popup/>
+<!--        </div>-->
       </q-card-section>
       <q-separator />
-      <q-card-section class="q-pa-none">
+      <q-card-section class="q-pa-none" v-if="optionCompra=='pantalla'">
+        <q-badge color="green-7"/> Libre
+        <q-badge color="red-7"/> Ocupado
+        <q-badge color="blue-7"/> Seleccionado
+        <q-badge color="orange-7"/> Reservado
+        <q-badge color="grey-7"/> No disponible
         <div class="text-bold text-white text-center bg-primary shadow-10" style="letter-spacing: 10px;">
           PANTALLA
         </div>
@@ -217,11 +212,43 @@
               </tr>
 <!--              </tbody>-->
             </q-markup-table>
+            <q-btn class="full-width" color="green-9" rounded @click="pagar"
+                   label="Pagar" :loading="loading" no-caps icon="o_shopping_cart" />
           </div>
         </div>
 <!--        <pre>{{sala}}</pre>-->
 <!--        <pre>{{seats}}</pre>-->
 <!--        <pre>{{selecionados}}</pre>-->
+      </q-card-section>
+      <q-card-section v-else>
+        <div>
+          <div class="text-bold">Estimado usuario,</div>
+          <div>
+            Te recordamos que es necesario realizar el pago a través del código QR adjunto. Por favor,
+            realiza el pago y envíanos una captura del comprobante. En caso de no realizar el pago correctamente, tu cuenta será bloqueada temporalmente. Una vez confirmado el pago, las entradas serán enviadas a tu correo electrónico. Si tienes alguna duda, puedes contactarnos al número
+            <a href="https://wa.me/59169603027" target="_blank" class="text-primary">69603027</a>
+          </div>
+          <div>Agradecemos tu colaboración.</div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-6 flex flex-center">
+            <q-img src="/qr.png" width="200px" height="200px" />
+          </div>
+          <div class="col-12 col-md-6">
+            <q-uploader
+              accept=".jpg, .png"
+              multiple
+              auto-upload
+              label="Arrastra una imagen o haz click para seleccionar"
+              @uploading="uploadingFn"
+              @failed="errorFn"
+              ref="uploader"
+              max-files="1"
+              auto-expand
+              :url="`${$url}upload/1/fileCreate`"
+              stack-label="upload image"/>
+          </div>
+        </div>
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -238,12 +265,15 @@ export default {
       carteleras: [],
       tabDay: '',
       dialogPantalla: false,
+      optionCompra: '',
       horario: {},
+      sale: {},
       seats: [],
       price: {
         precio: 0
       },
       loading: false,
+      loadingMovie: false,
       sala: {
         filas: 0,
         columnas: 0
@@ -258,6 +288,43 @@ export default {
     this.searchCarteleraGet()
   },
   methods: {
+    uploadingFn (e) {
+      e.xhr.onload = () => {
+        if (e.xhr.readyState === e.xhr.DONE) {
+          if (e.xhr.status === 200) {
+            // this.dialogPhoto=false
+            this.sale.image = e.xhr.response
+          }
+        }
+      }
+    },
+    errorFn (err) {
+      console.log(err)
+      this.$alert.error('Error al subir la imagen, intente nuevamente el nombre no debe contener espacios o ñ')
+    },
+    pagar () {
+      if (this.selecionados.length === 0) {
+        this.$alert.error('Debe seleccionar al menos un asiento')
+        return false
+      }
+      if (this.$store.isLoggedIn === false) {
+        this.$alert.error('Debe iniciar sesion para realizar la compra')
+        return false
+      }
+      this.optionCompra = 'PAGO'
+      // this.loading = true
+      // this.$axios.post('comprar', {
+      //   programa_id: this.horario.id,
+      //   asientos: this.selecionados
+      // }).then(res => {
+      //   this.$alert.success('Compra realizada con exito')
+      //   this.dialogPantalla = false
+      //   this.selecionados = []
+      //   this.searchCarteleraGet()
+      // }).finally(() => {
+      //   this.loading = false
+      // })
+    },
     seleccionar (seat) {
       if (seat.activo === 'SELECCIONADO') {
         seat.activo = 'ACTIVO'
@@ -306,6 +373,7 @@ export default {
       this.loading = true
       this.sala = await horario.sala
       this.price = await horario.price
+      this.optionCompra = 'pantalla'
       this.$axios.get('seatsSearch/' + this.horario.id).then(response => {
         this.seats = response.data
         this.dialogPantalla = true
@@ -313,12 +381,12 @@ export default {
       })
     },
     searchCarteleraGet () {
-      this.loading = true
+      this.loadingMovie = true
       this.$axios.get('searchCatelera/' + this.$route.params.id).then(response => {
         this.carteleras = response.data
         this.tabDay = this.carteleras[0].fecha
       }).finally(() => {
-        this.loading = false
+        this.loadingMovie = false
       })
     },
     openVideo () {

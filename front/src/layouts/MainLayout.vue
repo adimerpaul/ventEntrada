@@ -50,9 +50,12 @@
           <q-img :src="`${$url}../images/${$store.user.avatar}`" alt="Avatar"/>
           <q-menu>
             <q-list>
-              <q-item clickable v-if="$store.isLoggedIn" @click="logout">
+              <q-item clickable @click="logout" v-ripple>
                 <q-item-section>
-                  <q-item-label>Logout</q-item-label>
+                  <q-item-section avatar>
+                    <q-icon color="logout" name="bluetooth" />
+                  </q-item-section>
+                  <q-item-section>Salir</q-item-section>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -224,7 +227,7 @@ export default {
         this.$axios.post('logout').then(() => {
           this.$axios.defaults.headers.common.Authorization = ''
           this.$store.user = {}
-          localStorage.removeItem('tokenSuper')
+          localStorage.removeItem('tokenPlaza')
           this.$store.isLoggedIn = false
           this.$q.loading.hide()
         })
