@@ -52,9 +52,9 @@
             <q-list>
               <q-item clickable @click="logout" v-ripple>
                 <q-item-section>
-                  <q-item-section avatar>
-                    <q-icon color="logout" name="bluetooth" />
-                  </q-item-section>
+<!--                  <q-item-section avatar>-->
+<!--                    <q-icon color="grey" name="logout" />-->
+<!--                  </q-item-section>-->
                   <q-item-section>Salir</q-item-section>
                 </q-item-section>
               </q-item>

@@ -23,11 +23,15 @@ Route::apiResource('carteleras',\App\Http\Controllers\CarteleraController::class
 Route::apiResource('movies',\App\Http\Controllers\MovieController::class);
 Route::get('disponibles',[\App\Http\Controllers\CarteleraController::class,'disponibles']);
 Route::get('searchCatelera/{movie_id}',[\App\Http\Controllers\CarteleraController::class,'searchCatelera']);
-Route::get('seatsSearch/{cartelera_id}',[\App\Http\Controllers\SeatsController::class,'seatsSearch']);
 Route::post('upload/{id}/{option}', [\App\Http\Controllers\UploadController::class, 'upload']);
+
+
 Route::group(['middleware'=>'auth:sanctum'],function (){
+    Route::get('seatsSearch/{cartelera_id}',[\App\Http\Controllers\SeatsController::class,'seatsSearch']);
     Route::post('/me', [\App\Http\Controllers\UserController::class,'me']);
     Route::post('/logout', [\App\Http\Controllers\UserController::class,'logout']);
+    Route::apiResource('sales',\App\Http\Controllers\SaleController::class);
+    Route::post('cantidadPedidaUserMax4',[\App\Http\Controllers\SaleController::class,'cantidadPedidaUserMax4']);
 //    Route::resource('/user',\App\Http\Controllers\UserController::class);
 //    Route::resource('/address',\App\Http\Controllers\AddressController::class);
 //    Route::resource('/sales',\App\Http\Controllers\SaleController::class);

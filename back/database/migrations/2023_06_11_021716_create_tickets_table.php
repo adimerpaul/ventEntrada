@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('numboc')->nullable();
             $table->string('numero')->nullable();
             $table->date('fecha')->nullable();
+            $table->dateTime('fechaVencimiento')->nullable();
             $table->string('numeroFuncion')->nullable();
             $table->string('nombreSala')->nullable();
             $table->string('serieTarifa')->nullable();
@@ -30,7 +31,7 @@ return new class extends Migration
             $table->string('devuelto')->nullable()->default(0);
             $table->string('idCupon')->nullable();
             $table->string('movie_id')->nullable();
-            $table->string('estado')->nullable()->default('Reservado');
+            $table->string('estado')->nullable()->default('RESERVADO');
             $table->unsignedBigInteger("user_id")->nullable();
             $table->foreign("user_id")->references("id")->on("users");
             $table->unsignedBigInteger("cartelera_id")->nullable();

@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Seats extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'fila',
+        'columna',
+        'letra',
+        'activo',
+        'salas_id',
+    ];
 }

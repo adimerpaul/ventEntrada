@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cartelera;
 use App\Http\Requests\StoreCarteleraRequest;
 use App\Http\Requests\UpdateCarteleraRequest;
+use App\Models\Sale;
 
 class CarteleraController extends Controller{
     public function index(){ return Cartelera::all(); }
@@ -31,7 +32,7 @@ class CarteleraController extends Controller{
             ->get();
         $resposeCateleras = [];
         foreach($fechaCarteleras as $fechaCartelera){
-            $horarios = Cartelera::with(["sala","price"])
+            $horarios = Cartelera::with(["sala","price","movie"])
                 ->where("carteleras.activo","=","ACTIVO")
                 ->where("carteleras.movie_id","=",$movie_id)
                 ->where("carteleras.fecha","=",$fechaCartelera->fecha)
@@ -42,10 +43,5 @@ class CarteleraController extends Controller{
             ];
         }
         return $resposeCateleras;
-//        return Cartelera::with(["movie","sala","price"])
-//            ->where("movie_id","=",$movie_id)
-//            ->where("carteleras.activo","=","ACTIVO")
-//            ->where("carteleras.fecha",">",date("Y-m-d"))
-//            ->get();
     }
 }

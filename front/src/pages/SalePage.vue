@@ -16,7 +16,7 @@
             @click="openVideo"
           >
             <div class="absolute-full text-subtitle2 flex flex-center">
-              <q-btn icon="o_play_circle" size="100px" flat color="grey" :loading="loadingMovie" />
+              <q-btn icon="o_play_circle" size="100px" dense flat color="grey" :loading="loadingMovie" />
             </div>
           </q-img>
         </div>
@@ -156,7 +156,6 @@
                         </q-btn>
                       </q-card-section>
                     </q-card>
-<!--                    <pre>{{horario}}</pre>-->
                   </div>
                 </div>
               </q-tab-panel>
@@ -167,17 +166,17 @@
     </div>
     <div class="col-12 col-md-1"></div>
   </div>
-  <q-dialog v-model="dialogPantalla" full-width>
+  <q-dialog v-model="dialogPantalla" full-width persistent>
     <q-card class="q-pa-xs">
       <q-card-section class="row items-center q-pa-none">
-<!--        <div class="col-12 text-center">-->
+        <q-btn flat dense round icon="arrow_back" @click="optionCompra='pantalla'" v-if="optionCompra=='PAGO'"/>
+        <q-btn flat dense :loading="loading" round icon="refresh" @click="dialogPantallaClick(this.horario)" v-else/>
         <q-space/>
           <div class="text-bold text-black">
             {{selecionados.length}} Asientos- {{total}}Bs
           </div>
         <q-space/>
-        <q-btn flat round icon="close" v-close-popup/>
-<!--        </div>-->
+        <q-btn flat dense round icon="close" @click="cancelarVenta()"/>
       </q-card-section>
       <q-separator />
       <q-card-section class="q-pa-none" v-if="optionCompra=='pantalla'">
@@ -192,33 +191,26 @@
         <div class="row">
           <div class="col-12 q-pt-md">
             <q-markup-table :separator="'cell'" flat bordered>
-<!--              <thead>-->
               <tr>
                 <th></th>
                 <th v-for="(c,i) in parseInt(sala.columnas)" :key="i">{{sala.columnas-c+1}}</th>
               </tr>
-<!--              </thead>-->
-<!--              <tbody>-->
               <tr v-for="(f,i) in parseInt(sala.filas)" :key="i">
                 <th>{{letra[i+1]}}</th>
                 <td style="padding: 0px;margin: 0px" v-for="(c,j) in parseInt(sala.columnas)" :key="j">
-                  <q-btn dense color="green-6" class="full-width" :label="letra[i+1]+'-'+(sala.columnas-c+1).toString()" v-if="seats[sala.columnas*(f-1)+(c-1)]['activo']=='ACTIVO'" @click="seleccionar(seats[sala.columnas*(f-1)+(c-1)])" />
-<!--                  <q-btn color="green-6" class="full-width" :label="letra[i+1]+'-'+(seats.columnas-c+1).toString()" v-if="seats[seats.columnas*(f-1)+(c-1)]['activo']=='LIBRE'" @click="seleccionar(hour,seats[seats.columnas*(f-1)+(c-1)])"/>-->
-                  <q-btn dense color="red-6" class="full-width"  v-else-if="seats[sala.columnas*(f-1)+(c-1)]['activo']=='OCUPADO'" disable/>
-<!--                  <q-btn color="yellow-6" class="full-width"  v-else-if="seats[seats.columnas*(f-1)+(c-1)]['activo']=='RESERVADO'"/>-->
-                  <q-btn dense color="blue-6" class="full-width" :label="letra[i+1]+'-'+(sala.columnas-c+1).toString()" v-else-if="seats[sala.columnas*(f-1)+(c-1)]['activo']=='SELECCIONADO'" @click="seleccionar(seats[sala.columnas*(f-1)+(c-1)])"/>
+                  <q-btn dense color="green-6" class="full-width" :label="letra[i+1]+'-'+(sala.columnas-c+1).toString()" v-if="seats[sala.columnas*(f-1)+(c-1)]['estado']=='DISPONIBLE'" @click="seleccionar(seats[sala.columnas*(f-1)+(c-1)])" />
+                  <q-btn dense color="red-6" class="full-width"  v-else-if="seats[sala.columnas*(f-1)+(c-1)]['estado']=='OCUPADO'" disable/>
+                  <q-btn dense color="orange-7" class="full-width"  v-else-if="seats[sala.columnas*(f-1)+(c-1)]['estado']=='RESERVADO' || seats[sala.columnas*(f-1)+(c-1)]['estado']=='RESERVADO SIN PAGAR'" disable/>
+                  <q-btn dense color="blue-6" class="full-width" :label="letra[i+1]+'-'+(sala.columnas-c+1).toString()" v-else-if="seats[sala.columnas*(f-1)+(c-1)]['estado']=='SELECCIONADO'" @click="seleccionar(seats[sala.columnas*(f-1)+(c-1)])"/>
                   <q-btn dense color="grey-6" class="full-width" v-else disable/>
                 </td>
               </tr>
-<!--              </tbody>-->
             </q-markup-table>
             <q-btn class="full-width" color="green-9" rounded @click="pagar"
                    label="Pagar" :loading="loading" no-caps icon="o_shopping_cart" />
           </div>
         </div>
-<!--        <pre>{{sala}}</pre>-->
-<!--        <pre>{{seats}}</pre>-->
-<!--        <pre>{{selecionados}}</pre>-->
+        <pre>{{seats}}</pre>
       </q-card-section>
       <q-card-section v-else>
         <div>
@@ -232,14 +224,17 @@
         </div>
         <div class="row">
           <div class="col-12 col-md-6 flex flex-center">
-            <q-img src="/qr.png" width="200px" height="200px" />
+            <div>
+              <div class="text-center text-bold text-red">Montó a pagar {{total}}Bs</div>
+              <q-img src="/qr.png" width="200px" height="200px" />
+            </div>
           </div>
           <div class="col-12 col-md-6">
             <q-uploader
               accept=".jpg, .png"
               multiple
               auto-upload
-              label="Arrastra una imagen o haz click para seleccionar"
+              label="Subir comprobante"
               @uploading="uploadingFn"
               @failed="errorFn"
               ref="uploader"
@@ -248,14 +243,22 @@
               :url="`${$url}upload/1/fileCreate`"
               stack-label="upload image"/>
           </div>
+          <div class="col-12">
+            <q-btn class="full-width" color="green-9" rounded @click="saleSubmit"
+                   label="Terminar Venta" :loading="loading" no-caps icon="o_shopping_cart" />
+<!--            <pre>{{sale}}</pre>-->
+<!--            <pre>{{seats.filter(seat => seat.estado === 'SELECCIONADO')}}</pre>-->
+<!--            <pre>{{price}}</pre>-->
+<!--            <pre>{{horario}}</pre>-->
+          </div>
         </div>
       </q-card-section>
     </q-card>
   </q-dialog>
-<!--  <pre>{{movie}}</pre>-->
 </q-page>
 </template>
 <script>
+
 export default {
   name: 'SalePage',
   data () {
@@ -269,6 +272,7 @@ export default {
       horario: {},
       sale: {},
       seats: [],
+      tiempoCompra: '',
       price: {
         precio: 0
       },
@@ -299,8 +303,30 @@ export default {
       }
     },
     errorFn (err) {
-      console.log(err)
+      console.error(err)
       this.$alert.error('Error al subir la imagen, intente nuevamente el nombre no debe contener espacios o ñ')
+    },
+    saleSubmit () {
+      if (this.sale.image === undefined) {
+        this.$alert.error('Debe subir una imagen del comprobante de pago')
+        return false
+      }
+      this.loading = true
+      this.$axios.post('sales', {
+        sale: { montoTotal: this.total, image: this.sale.image },
+        seats: this.seats.filter(seat => seat.estado === 'SELECCIONADO'),
+        price: this.price,
+        cartelera: this.horario
+      }).then(res => {
+        this.$alert.success('Venta realizada con exito')
+        this.dialogPantalla = false
+        this.selecionados = []
+        this.searchCarteleraGet()
+      }).catch(err => {
+        this.$alert.error(err.response.data.message)
+      }).finally(() => {
+        this.loading = false
+      })
     },
     pagar () {
       if (this.selecionados.length === 0) {
@@ -311,69 +337,50 @@ export default {
         this.$alert.error('Debe iniciar sesion para realizar la compra')
         return false
       }
-      this.optionCompra = 'PAGO'
-      // this.loading = true
-      // this.$axios.post('comprar', {
-      //   programa_id: this.horario.id,
-      //   asientos: this.selecionados
-      // }).then(res => {
-      //   this.$alert.success('Compra realizada con exito')
-      //   this.dialogPantalla = false
-      //   this.selecionados = []
-      //   this.searchCarteleraGet()
-      // }).finally(() => {
-      //   this.loading = false
-      // })
+      this.loading = true
+      this.$axios.post('cantidadPedidaUserMax4', {
+        seats: this.seats.filter(seat => seat.estado === 'SELECCIONADO'),
+        cartelera: this.horario
+      }).then(res => {
+        this.optionCompra = 'PAGO'
+      }).catch(err => {
+        this.$alert.error(err.response.data.message)
+        this.seatsSearch()
+      }).finally(() => {
+        this.loading = false
+      })
     },
     seleccionar (seat) {
-      if (seat.activo === 'SELECCIONADO') {
-        seat.activo = 'ACTIVO'
-        // this.$api.post('momentaneoDelete',{
-        //   user_id:1,
-        //   programa_id:funcion.id,
-        //   fila:seat.fila,
-        //   columna:seat.columna,
-        //   letra:seat.letra,
-        // }).then(res=>{
-        //   this.loading=false
-        //   this.myMomentaneo()
-        // })
+      if (seat.estado === 'SELECCIONADO') {
+        seat.estado = 'DISPONIBLE'
       } else {
         if (this.selecionados.length >= 4) {
           this.$alert.error('Solo puede seleccionar 4 asientos')
           return
         }
-        seat.activo = 'SELECCIONADO'
-        // this.$api.post('momentaneo',{
-        //   user_id:this.store.user.id,
-        //   programa_id:funcion.id,
-        //   fila:seat.fila,
-        //   columna:seat.columna,
-        //   letra:seat.letra,
-        //   fecha:funcion.horaInicio,
-        //   pelicula:funcion.movie.nombre+' '+funcion.movie.formato,
-        //   pelicula_id:funcion.movie.id,
-        //   precio:funcion.price.precio,
-        //   promo:funcion.price.promo=='SI'?true:false
-        // }).then(res=>{
-        //   this.loading=false
-        //   this.myMomentaneo()
-        //   if (res.data==1){
-        //     this.clickSala(funcion)
-        //   }
-        // })
+        seat.estado = 'SELECCIONADO'
       }
-      // console.log(seat)
-      // this.hour.sala.seats[indice]['activo']
-      //   this.temporal.push(asiento)
+    },
+    cancelarVenta () {
+      this.dialogPantalla = false
+      this.selecionados = []
+      this.searchCarteleraGet()
     },
     async dialogPantallaClick (horario) {
-      // console.log(horario)
+      this.sale = {}
       this.horario = horario
-      this.loading = true
       this.sala = await horario.sala
       this.price = await horario.price
       this.optionCompra = 'pantalla'
+      this.tiempoCompra = ''
+      this.seatsSearch()
+    },
+    seatsSearch () {
+      if (this.$store.isLoggedIn === false) {
+        this.$alert.error('Debe iniciar sesion para realizar la compra')
+        return false
+      }
+      this.loading = true
       this.$axios.get('seatsSearch/' + this.horario.id).then(response => {
         this.seats = response.data
         this.dialogPantalla = true
@@ -401,7 +408,7 @@ export default {
   },
   computed: {
     selecionados () {
-      return this.seats.filter(seat => seat.activo === 'SELECCIONADO')
+      return this.seats.filter(seat => seat.estado === 'SELECCIONADO')
     },
     total () {
       return this.selecionados.length * this.price.precio
