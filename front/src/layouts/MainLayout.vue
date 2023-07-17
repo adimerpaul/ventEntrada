@@ -49,8 +49,24 @@
         <q-avatar v-else class="cursor-pointer">
           <q-img :src="`${$url}../images/${$store.user.avatar}`" alt="Avatar"/>
           <q-menu>
-            <q-list>
+            <q-list dense>
+              <q-item>
+                <q-item-section avatar>
+                  <q-avatar>
+                    <q-img :src="`${$url}../images/${$store.user.avatar}`" alt="Avatar" width="40px"/>
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>{{$store.user.name}}</q-item-label>
+                  <q-item-label caption>{{$store.user.email}}</q-item-label>
+                </q-item-section>
+              </q-item>
               <q-item clickable @click="logout" v-ripple>
+                <q-item-section avatar>
+                  <q-avatar>
+                    <q-icon color="grey" name="logout" />
+                  </q-avatar>
+                </q-item-section>
                 <q-item-section>
 <!--                  <q-item-section avatar>-->
 <!--                    <q-icon color="grey" name="logout" />-->

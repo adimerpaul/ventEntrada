@@ -173,7 +173,7 @@
         <q-btn flat dense :loading="loading" round icon="refresh" @click="dialogPantallaClick(this.horario)" v-else/>
         <q-space/>
           <div class="text-bold text-black">
-            {{selecionados.length}} Asientos- {{total}}Bs
+            {{selecionados.length}} Asientos- {{total}}Bs <q-icon name="schedule"/> {{tiempoCompra}}
           </div>
         <q-space/>
         <q-btn flat dense round icon="close" @click="cancelarVenta()"/>
@@ -210,7 +210,7 @@
                    label="Pagar" :loading="loading" no-caps icon="o_shopping_cart" />
           </div>
         </div>
-        <pre>{{seats}}</pre>
+<!--        <pre>{{seats}}</pre>-->
       </q-card-section>
       <q-card-section v-else>
         <div>
@@ -282,6 +282,7 @@ export default {
         filas: 0,
         columnas: 0
       },
+      myTimeout: null,
       letra: ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB']
     }
   },
@@ -290,6 +291,9 @@ export default {
       this.movie = response.data
     })
     this.searchCarteleraGet()
+  },
+  mounted () {
+    clearInterval(this.myTimeout)
   },
   methods: {
     uploadingFn (e) {
@@ -364,6 +368,8 @@ export default {
     cancelarVenta () {
       this.dialogPantalla = false
       this.selecionados = []
+      this.tiempoCompra = '0'
+      clearTimeout(this.myTimeout)
       this.searchCarteleraGet()
     },
     async dialogPantallaClick (horario) {
@@ -372,7 +378,27 @@ export default {
       this.sala = await horario.sala
       this.price = await horario.price
       this.optionCompra = 'pantalla'
-      this.tiempoCompra = ''
+      this.tiempoCompra = '05:00'
+      clearInterval(this.myTimeout)
+      this.myTimeout = setInterval(() => {
+        const time = this.tiempoCompra.split(':')
+        let minutes = parseInt(time[0])
+        let seconds = parseInt(time[1])
+        if (seconds === 0) {
+          if (minutes === 0) {
+            clearInterval(this.myTimeout)
+            this.dialogPantalla = false
+            this.selecionados = []
+            this.searchCarteleraGet()
+            return
+          }
+          minutes--
+          seconds = 59
+        } else {
+          seconds--
+        }
+        this.tiempoCompra = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`
+      }, 1000)
       this.seatsSearch()
     },
     seatsSearch () {
