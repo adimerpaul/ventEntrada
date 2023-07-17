@@ -19,15 +19,15 @@ class CarteleraController extends Controller{
             ->join("salas","salas.id","=","carteleras.sala_id")
             ->join("prices","prices.id","=","carteleras.price_id")
             ->where("carteleras.activo","=","ACTIVO")
+            ->where("carteleras.horaInicio",">=",date("Y-m-d H:i:s"))
             ->groupBy("movies.codeImg","movies.id","movies.title","movies.image","movies.urlVideo","movies.director","movies.reparto","movies.sinopsis","movies.genero","movies.duracion","movies.clasificacion","movies.idioma","movies.subtitulos","movies.formato","movies.fechaEstreno","movies.preVenta")
-            ->where("carteleras.fecha",">",date("Y-m-d"))
             ->get();
     }
     public function searchCatelera($movie_id){
         $fechaCarteleras = Cartelera::select("carteleras.fecha")
             ->where("carteleras.activo","=","ACTIVO")
             ->where("carteleras.movie_id","=",$movie_id)
-            ->where("carteleras.fecha",">",date("Y-m-d"))
+            ->where("carteleras.horaInicio",">=",date("Y-m-d H:i:s"))
             ->groupBy("carteleras.fecha")
             ->get();
         $resposeCateleras = [];
@@ -36,6 +36,7 @@ class CarteleraController extends Controller{
                 ->where("carteleras.activo","=","ACTIVO")
                 ->where("carteleras.movie_id","=",$movie_id)
                 ->where("carteleras.fecha","=",$fechaCartelera->fecha)
+                ->where("carteleras.horaInicio",">=",date("Y-m-d H:i:s"))
                 ->get();
             $resposeCateleras[] = [
                 "fecha" => $fechaCartelera->fecha,

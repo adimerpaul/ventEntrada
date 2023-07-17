@@ -13,7 +13,7 @@ class CarteleraSeeder extends Seeder
      */
     public function run(): void
     {
-        $fecha = date("Y-m-d",strtotime("+1 day"));
+        $fecha = date("Y-m-d",strtotime("+0 day"));
         $fecha2Day = date("Y-m-d",strtotime("+2 day"));
         $fecha3Day = date("Y-m-d",strtotime("+3 day"));
         $fecha4Day = date("Y-m-d",strtotime("+4 day"));
@@ -22,7 +22,7 @@ class CarteleraSeeder extends Seeder
             [
                 'fecha'=>"$fecha",
                 "horaInicio"=>"$fecha 04:00:00",
-                "horaFin"=>"$fecha 12:00:00",
+                "horaFin"=>"$fecha 04:30:00",
                 "subtitulada"=>"NO",
                 "idioma"=>"Español",
                 "formato"=>"2D",
@@ -34,7 +34,7 @@ class CarteleraSeeder extends Seeder
             ],
             [
                 'fecha'=>"$fecha",
-                "horaInicio"=>"$fecha 13:00:00",
+                "horaInicio"=>"$fecha 22:00:00",
                 "horaFin"=>"$fecha 15:00:00",
                 "subtitulada"=>"NO",
                 "idioma"=>"Español",
@@ -112,7 +112,7 @@ class CarteleraSeeder extends Seeder
             ],
             [
                 'fecha'=>"$fecha",
-                "horaInicio"=>"$fecha 13:00:00",
+                "horaInicio"=>"$fecha 22:00:00",
                 "horaFin"=>"$fecha 15:00:00",
                 "subtitulada"=>"NO",
                 "idioma"=>"Español",
@@ -138,7 +138,7 @@ class CarteleraSeeder extends Seeder
             ],
             [
                 'fecha'=>"$fecha",
-                "horaInicio"=>"$fecha 13:00:00",
+                "horaInicio"=>"$fecha 22:00:00",
                 "horaFin"=>"$fecha 15:00:00",
                 "subtitulada"=>"NO",
                 "idioma"=>"Español",
@@ -164,7 +164,7 @@ class CarteleraSeeder extends Seeder
             ],
             [
                 'fecha'=>"$fecha",
-                "horaInicio"=>"$fecha 13:00:00",
+                "horaInicio"=>"$fecha 22:00:00",
                 "horaFin"=>"$fecha 15:00:00",
                 "subtitulada"=>"NO",
                 "idioma"=>"Español",
@@ -177,7 +177,7 @@ class CarteleraSeeder extends Seeder
             ],
             [
                 'fecha'=>"$fecha",
-                "horaInicio"=>"$fecha 13:00:00",
+                "horaInicio"=>"$fecha 22:00:00",
                 "horaFin"=>"$fecha 15:00:00",
                 "subtitulada"=>"NO",
                 "idioma"=>"Español",
@@ -190,7 +190,7 @@ class CarteleraSeeder extends Seeder
             ],
             [
                 'fecha'=>"$fecha",
-                "horaInicio"=>"$fecha 13:00:00",
+                "horaInicio"=>"$fecha 22:00:00",
                 "horaFin"=>"$fecha 15:00:00",
                 "subtitulada"=>"NO",
                 "idioma"=>"Español",

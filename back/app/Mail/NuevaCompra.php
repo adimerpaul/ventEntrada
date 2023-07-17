@@ -13,12 +13,20 @@ class NuevaCompra extends Mailable
 {
     use Queueable, SerializesModels;
     public $compra;
+    public $movie;
+    public $ticketsVendidos;
+    public $sala;
+    public $cartelera;
     /**
      * Create a new message instance.
      */
-    public function __construct($compra)
+    public function __construct($compra, $movie, $ticketsVendidos,$sala,$cartelera)
     {
         $this->compra = $compra;
+        $this->movie = $movie;
+        $this->ticketsVendidos = $ticketsVendidos;
+        $this->sala = $sala;
+        $this->cartelera = $cartelera;
     }
 
     /**

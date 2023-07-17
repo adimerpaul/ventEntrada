@@ -3,33 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Mail\NuevaCompra;
+use App\Models\Cartelera;
+use App\Models\Movie;
+use App\Models\Sala;
 use App\Models\Sale;
 use App\Http\Requests\StoreSaleRequest;
 use App\Http\Requests\UpdateSaleRequest;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class SaleController extends Controller{
     public function index(){
-        Mail::to(env('EMAIL'))->send(new NuevaCompra('compra'));
+//        Mail::to(env('EMAIL'))->send(new NuevaCompra('compra'));
     }
     public function cantidadPedidaUserMax4(Request $request){
 
         //verificamos hora de atencion
-        $horaDeAtencion = date('H:i:s', strtotime('08:00:00'));
-        $horaDeCierre = date('H:i:s', strtotime('22:00:00'));
-        $horaActual = date('H:i:s');
-        if ($horaActual<$horaDeAtencion || $horaActual>$horaDeCierre) {
-            return response()->json([
-                'message' => 'Solo puede comprar entradas entre las 8:00 y las 22:00',
-            ], 403);
-        }
+//        $horaDeAtencion = date('H:i:s', strtotime('08:00:00'));
+//        $horaDeCierre = date('H:i:s', strtotime('22:00:00'));
+//        $horaActual = date('H:i:s');
+//        if ($horaActual<$horaDeAtencion || $horaActual>$horaDeCierre) {
+//            return response()->json([
+//                'message' => 'Solo puede comprar entradas entre las 8:00 y las 22:00',
+//            ], 403);
+//        }
 
 
         //verificamos que el usuario no haya comprado mas de 4 entradas en el dia
         $saleCount = Ticket::where('user_id',$request->user()->id)
-            ->where('estado','OCUPADO')
+            ->whereIn('estado',['RESERVADO','OCUPADO'])
             ->whereDate('created_at',date('Y-m-d'))
             ->count();
         if ($saleCount>=4) {
@@ -41,9 +45,23 @@ class SaleController extends Controller{
                 'message' => 'Solo puede comprar '.(4-$saleCount).' entradas mas',
             ], 403);
         }
-        //verificamos que el usuario no haya comprado mas de 4 entradas en el dia
+        //verificamos no compren el mismo asiento
 
-
+        $letras = array('', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB');
+        foreach ($request->seats as $seat){
+            $ticket=Ticket::find($seat['id']);
+            if ($ticket){
+                if ($ticket->user_id == $request->user()->id && $ticket->estado == 'RESERVADO SIN PAGAR') {
+                    $ticket->estado = 'DISPONIBLE';
+                    $ticket->save();
+                }
+                if ($ticket->estado=='RESERVADO' || $ticket->estado=='RESERVADO SIN PAGAR'){
+                    return response()->json([
+                        'message' => 'El asiento '.$letras[$seat['fila']].'-'.$seat['columna'].' ya fue reservado',
+                    ], 403);
+                }
+            }
+        }
 
         foreach ($request->seats as $seat){
             $ticket=Ticket::find($seat['id']);
@@ -51,7 +69,7 @@ class SaleController extends Controller{
             $ticket->fechaVencimiento = date('Y-m-d H:i:s', strtotime('+5 minutes'));
             $ticket->user_id=$request->user()->id;
             $ticket->save();
-            error_log(json_encode($ticket));
+//            error_log(json_encode($ticket));
 //            $seat['cartelera_id']=$request->cartelera['id'];
         }
         //error_log(json_encode($request->cartelera));
@@ -117,6 +135,7 @@ class SaleController extends Controller{
 //        $user->nit=$request->nit;
 //        $user->razon=$request->razon;
 //        $user->save();
+        DB::beginTransaction();
 
         $letras = array('', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB');
         foreach ($request->seats as $seat){
@@ -155,15 +174,17 @@ class SaleController extends Controller{
         $sale->cortesia="";
         $sale->user_id=$request->user()->id;
         $sale->save();
-
+        $ticketsVendidos=[];
         foreach ($request->seats as $seat){
             $ticket=Ticket::where('fila',$seat['fila'])
                 ->where('columna',$seat['columna'])
                 ->where('cartelera_id',$request->cartelera['id'])
                 ->first();
             if ($ticket){
+                $ticketsVendidos[]=$letras[$seat['fila']].'-'.$seat['columna'];
+                $ticket->fechaVencimiento=null;
                 $ticket->sale_id=$sale->id;
-                $ticket->estado='OCUPADO';
+                $ticket->estado='RESERVADO';
                 $ticket->save();
             }
 //            $numBoleto=Ticket::where('cartelera_id',$request->cartelera['id'])->count()+1;
@@ -200,5 +221,10 @@ class SaleController extends Controller{
 //            $ticket->sala_id=$request->cartelera['sala']['id'];
 //            $ticket->save();
         }
+        $movie = Movie::find($request->cartelera['movie']['id']);
+        $sala = Sala::find($request->cartelera['sala']['id']);
+        $cartelera = Cartelera::find($request->cartelera['id']);
+        Mail::to(env('EMAIL'))->send(new NuevaCompra($sale,$movie,$ticketsVendidos,$sala,$cartelera));
+        DB::commit();
     }
 }
