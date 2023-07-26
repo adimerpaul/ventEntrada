@@ -15,8 +15,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class SaleController extends Controller{
-    public function index(){
-//        Mail::to(env('EMAIL'))->send(new NuevaCompra('compra'));
+    public function index(Request $request){
+        $dateInit = $request->get('dateIni').' 00:00:00';
+        $dateEnd = $request->get('dateFin').' 23:59:59';
+        $sales = Sale::whereBetween('fechaEmision', [$dateInit, $dateEnd])
+            ->with(['details','user','tickets'])
+            ->orderBy('id','desc')->get();
+        return $sales;
     }
     public function cantidadPedidaUserMax4(Request $request){
 
@@ -164,6 +169,7 @@ class SaleController extends Controller{
         $sale->usuario=$request->user()->name;
         $sale->codigoRecepcion="";
         $sale->siatEnviado=0;
+        $sale->image=$request->sale['image'];
         $sale->codigoRecepcionEventoSignificativo="";
         $sale->siatAnulado=0;
         $sale->tipo="BOLETERIA";

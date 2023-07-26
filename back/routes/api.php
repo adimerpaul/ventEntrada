@@ -23,6 +23,7 @@ Route::get('searchCatelera/{movie_id}',[\App\Http\Controllers\CarteleraControlle
 Route::post('upload/{id}/{option}', [\App\Http\Controllers\UploadController::class, 'upload']);
 Route::apiResource('carousels',\App\Http\Controllers\CarouselController::class);
 Route::apiResource('movies',\App\Http\Controllers\MovieController::class);
+Route::post('/login', [\App\Http\Controllers\UserController::class,'login']);
 
 Route::group(['middleware'=>'auth:sanctum'],function (){
     Route::get('seatsSearch/{cartelera_id}',[\App\Http\Controllers\SeatsController::class,'seatsSearch']);

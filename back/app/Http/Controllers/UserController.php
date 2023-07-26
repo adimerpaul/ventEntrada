@@ -34,15 +34,15 @@ class UserController extends Controller
     }
     public function login(Request $request){
         $request->validate([
-            'email' => 'required|email',
+            'nickname' => 'required',
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('nickname', $request->nickname)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['Las credenciales proporcionadas son incorrectas'],
+                'nickname' => ['Las credenciales proporcionadas son incorrectas'],
             ]);
         }
         return response()->json([

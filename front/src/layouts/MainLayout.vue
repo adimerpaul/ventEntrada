@@ -47,7 +47,7 @@
         <q-btn dense label="Iniciar Sesión" size="12px" color="primary" no-caps
                @click="useAuthProvider('google')" v-if="!$store.isLoggedIn"/>
         <q-avatar v-else class="cursor-pointer">
-          <q-img :src="`${$url}../images/${$store.user.avatar}`" alt="Avatar"/>
+          <q-img :src="`${$url}../images/${$store.user.avatar}`" alt="Avatar" v-if="$store.user.avatar" width="40px"/>
           <q-menu>
             <q-list dense>
               <q-item>
@@ -61,6 +61,16 @@
                   <q-item-label caption>{{$store.user.email}}</q-item-label>
                 </q-item-section>
               </q-item>
+              <q-item clickable v-ripple to="/admin" v-if="$store.user.id==1">
+                <q-item-section avatar>
+                  <q-avatar>
+                    <q-icon color="grey" name="o_verified" />
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-section>Administración</q-item-section>
+                </q-item-section>
+              </q-item>
               <q-item clickable @click="logout" v-ripple>
                 <q-item-section avatar>
                   <q-avatar>
@@ -68,9 +78,6 @@
                   </q-avatar>
                 </q-item-section>
                 <q-item-section>
-<!--                  <q-item-section avatar>-->
-<!--                    <q-icon color="grey" name="logout" />-->
-<!--                  </q-item-section>-->
                   <q-item-section>Salir</q-item-section>
                 </q-item-section>
               </q-item>

@@ -50,6 +50,13 @@ export default boot(({ app, router }) => {
       if (!fecha) return ''
       const date = moment(String(fecha)).format('hh:mm A')
       return date
+    },
+    dateDmYHis (value) {
+      const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Set', 'Nov', 'Dic']
+      const mes = meses[moment(String(value)).format('MM') - 1]
+      if (!value) return ''
+      const date = moment(String(value)).format('DD') + ' ' + mes + ' ' + moment(String(value)).format('YYYY') + ' ' + moment(String(value)).format('hh:mm A')
+      return date
     }
   }
   app.config.globalProperties.$url = import.meta.env.VITE_BACK_API

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string("cuf")->nullable();
             $table->string("cufd")->nullable();
             $table->string("cui")->nullable();
+            $table->string("image")->nullable();
             $table->integer("codigoSucursal")->nullable();
             $table->integer("codigoPuntoVenta")->nullable();
             $table->dateTime("fechaEmision")->nullable();
